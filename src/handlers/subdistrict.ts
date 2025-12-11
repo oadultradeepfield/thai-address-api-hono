@@ -9,10 +9,17 @@ import {
   SubdistrictDTO,
   FullSubdistrictDTO,
 } from "../db/subdistrict";
+import { CACHE_TTL, getCacheKey } from "../utils/kv";
 
 export async function listSubdistrictsHandler(c: Context) {
   try {
     const url = new URL(c.req.raw.url);
+    const cacheKey = getCacheKey(c.req.raw, "subdistrict");
+    const cachedData = await c.env.QUERY_KV.get(cacheKey, "json");
+    if (cachedData) {
+      return c.json(cachedData);
+    }
+
     const pagination = getPaginationParams(url.searchParams);
     const { page, pageSize } = pagination;
 
@@ -44,8 +51,15 @@ export async function listSubdistrictsHandler(c: Context) {
     );
 
     const meta = getPaginationMeta(total, pagination);
+    const responseData = jsonResponse<SubdistrictDTO[]>(records, meta);
 
-    return c.json(jsonResponse<SubdistrictDTO[]>(records, meta));
+    c.executionCtx.waitUntil(
+      c.env.QUERY_KV.put(cacheKey, JSON.stringify(responseData), {
+        expirationTtl: CACHE_TTL,
+      }),
+    );
+
+    return c.json(responseData);
   } catch (err: unknown) {
     if (err instanceof Error) {
       return c.json(errorResponse(err.message || "Internal Server Error"), 500);
@@ -60,6 +74,12 @@ export async function getSubdistrictsByPostalCodeHandler(c: Context) {
 
     if (isNaN(postalCode)) {
       return c.json(errorResponse("Invalid postal code format"), 400);
+    }
+
+    const cacheKey = getCacheKey(c.req.raw, "subdistrict");
+    const cachedData = await c.env.QUERY_KV.get(cacheKey, "json");
+    if (cachedData) {
+      return c.json(cachedData);
     }
 
     const url = new URL(c.req.raw.url);
@@ -93,8 +113,15 @@ export async function getSubdistrictsByPostalCodeHandler(c: Context) {
     );
 
     const meta = getPaginationMeta(records.length, pagination);
+    const responseData = jsonResponse<FullSubdistrictDTO[]>(records, meta);
 
-    return c.json(jsonResponse<FullSubdistrictDTO[]>(records, meta));
+    c.executionCtx.waitUntil(
+      c.env.QUERY_KV.put(cacheKey, JSON.stringify(responseData), {
+        expirationTtl: CACHE_TTL,
+      }),
+    );
+
+    return c.json(responseData);
   } catch (err: unknown) {
     console.error("Get Subdistricts By Zip Error:", err);
     if (err instanceof Error) {

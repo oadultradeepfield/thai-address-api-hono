@@ -3,10 +3,18 @@ import { district } from "../drizzle-out/schema";
 import { jsonResponse, errorResponse } from "../responses/respond";
 import { getPaginationParams, getPaginationMeta } from "../utils/pagination";
 import { countDistricts, fetchDistricts, DistrictDTO } from "../db/district";
+import { CACHE_TTL, getCacheKey } from "../utils/kv";
 
 export async function listDistrictsHandler(c: Context) {
   try {
     const url = new URL(c.req.raw.url);
+
+    const cacheKey = getCacheKey(c.req.raw, "district");
+    const cachedData = await c.env.QUERY_KV.get(cacheKey, "json");
+    if (cachedData) {
+      return c.json(cachedData);
+    }
+
     const pagination = getPaginationParams(url.searchParams);
     const { page, pageSize } = pagination;
 
@@ -35,8 +43,15 @@ export async function listDistrictsHandler(c: Context) {
     );
 
     const meta = getPaginationMeta(total, pagination);
+    const responseData = jsonResponse<DistrictDTO[]>(records, meta);
 
-    return c.json(jsonResponse<DistrictDTO[]>(records, meta));
+    c.executionCtx.waitUntil(
+      c.env.QUERY_KV.put(cacheKey, JSON.stringify(responseData), {
+        expirationTtl: CACHE_TTL,
+      }),
+    );
+
+    return c.json(responseData);
   } catch (err: unknown) {
     console.error("List Districts Error:", err);
     if (err instanceof Error) {
