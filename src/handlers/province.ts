@@ -56,8 +56,10 @@ export async function listProvincesHandler(c: Context) {
     const meta = getPaginationMeta(total, pagination);
 
     return c.json(jsonResponse<ProvinceDTO[]>(data, meta));
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("List Provinces Error:", err);
-    return c.json(errorResponse(err.message || "Internal Server Error"), 500);
+    if (err instanceof Error) {
+      return c.json(errorResponse(err.message || "Internal Server Error"), 500);
+    }
   }
 }

@@ -75,8 +75,10 @@ export async function listDistrictsHandler(c: Context) {
     const meta = getPaginationMeta(total, pagination);
 
     return c.json(jsonResponse<DistrictDTO[]>(data, meta));
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("List Districts Error:", err);
-    return c.json(errorResponse(err.message || "Internal Server Error"), 500);
+    if (err instanceof Error) {
+      return c.json(errorResponse(err.message || "Internal Server Error"), 500);
+    }
   }
 }

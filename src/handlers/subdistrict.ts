@@ -95,9 +95,11 @@ export async function listSubdistrictsHandler(c: Context) {
     const meta = getPaginationMeta(total, pagination);
 
     return c.json(jsonResponse<SubdistrictDTO[]>(data, meta));
-  } catch (err: any) {
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return c.json(errorResponse(err.message || "Internal Server Error"), 500);
+    }
     console.error("List Subdistricts Error:", err);
-    return c.json(errorResponse(err.message || "Internal Server Error"), 500);
   }
 }
 
@@ -176,8 +178,10 @@ export async function getSubdistrictsByPostalCodeHandler(c: Context) {
     const meta = getPaginationMeta(total, pagination);
 
     return c.json(jsonResponse<FullSubdistrictDTO[]>(data, meta));
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Get Subdistricts By Zip Error:", err);
-    return c.json(errorResponse(err.message || "Internal Server Error"), 500);
+    if (err instanceof Error) {
+      return c.json(errorResponse(err.message || "Internal Server Error"), 500);
+    }
   }
 }
