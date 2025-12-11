@@ -4,6 +4,13 @@
   "main": "src/index.ts",
   "compatibility_date": "2025-12-11",
   "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    {
+      "pattern": "thai-address-api.phanuphats.com",
+      "custom_domain": true,
+    },
+  ],
+  "workers_dev": false,
   "kv_namespaces": [
     {
       "binding": "QUERY_KV",
