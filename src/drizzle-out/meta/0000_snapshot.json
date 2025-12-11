@@ -1,0 +1,171 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "6",
+  "dialect": "sqlite",
+  "tables": {
+    "province": {
+      "name": "province",
+      "columns": {
+        "province_id": {
+          "autoincrement": false,
+          "name": "province_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name_th": {
+          "autoincrement": false,
+          "name": "name_th",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_en": {
+          "autoincrement": false,
+          "name": "name_en",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "district": {
+      "name": "district",
+      "columns": {
+        "district_id": {
+          "autoincrement": false,
+          "name": "district_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "province_id": {
+          "autoincrement": false,
+          "name": "province_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_th": {
+          "autoincrement": false,
+          "name": "name_th",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_en": {
+          "autoincrement": false,
+          "name": "name_en",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {
+        "district_province_id_province_province_id_fk": {
+          "name": "district_province_id_province_province_id_fk",
+          "tableFrom": "district",
+          "tableTo": "province",
+          "columnsFrom": [
+            "province_id"
+          ],
+          "columnsTo": [
+            "province_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "subdistrict": {
+      "name": "subdistrict",
+      "columns": {
+        "subdistrict_id": {
+          "autoincrement": false,
+          "name": "subdistrict_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": false
+        },
+        "district_id": {
+          "autoincrement": false,
+          "name": "district_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_th": {
+          "autoincrement": false,
+          "name": "name_th",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_en": {
+          "autoincrement": false,
+          "name": "name_en",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lat": {
+          "autoincrement": false,
+          "name": "lat",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "long": {
+          "autoincrement": false,
+          "name": "long",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "postal_code": {
+          "autoincrement": false,
+          "name": "postal_code",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {
+        "subdistrict_district_id_district_district_id_fk": {
+          "name": "subdistrict_district_id_district_district_id_fk",
+          "tableFrom": "subdistrict",
+          "tableTo": "district",
+          "columnsFrom": [
+            "district_id"
+          ],
+          "columnsTo": [
+            "district_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

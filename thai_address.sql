@@ -8462,3 +8462,22 @@ INSERT INTO subdistrict VALUES(961204,9612,'ช้างเผือก','Chang 
 INSERT INTO subdistrict VALUES(961301,9613,'จวบ','Chuap',6.256000000000000227,101.816999999999993,96130);
 INSERT INTO subdistrict VALUES(961302,9613,'บูกิต','Bu Kit',6.182000000000000383,101.8280000000000029,96130);
 INSERT INTO subdistrict VALUES(961303,9613,'มะรือโบออก','Marue Bo Ok',6.248999999999999667,101.875,96130);
+
+-- Province
+CREATE INDEX IF NOT EXISTS idx_province_nameTh ON province(name_th);
+CREATE INDEX IF NOT EXISTS idx_province_nameEn ON province(name_en);
+
+-- District
+CREATE INDEX IF NOT EXISTS idx_district_provinceId ON district(province_id);
+CREATE INDEX IF NOT EXISTS idx_district_nameTh ON district(name_th);
+CREATE INDEX IF NOT EXISTS idx_district_nameEn ON district(name_en);
+
+-- Subdistrict
+CREATE INDEX IF NOT EXISTS idx_subdistrict_districtId ON subdistrict(district_id);
+CREATE INDEX IF NOT EXISTS idx_subdistrict_postalCode ON subdistrict(postal_code);
+CREATE INDEX IF NOT EXISTS idx_subdistrict_nameTh ON subdistrict(name_th);
+CREATE INDEX IF NOT EXISTS idx_subdistrict_nameEn ON subdistrict(name_en);
+
+-- Ccomposite indices
+CREATE INDEX IF NOT EXISTS idx_subdistrict_districtId_nameTh ON subdistrict(district_id, name_th);
+CREATE INDEX IF NOT EXISTS idx_subdistrict_districtId_postalCode ON subdistrict(district_id, postal_code);
