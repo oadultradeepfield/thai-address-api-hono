@@ -1,9 +1,9 @@
-import { Hono } from "hono";
+import { initDatabase } from "./db/database";
+import App from "./app";
 
-const app = new Hono();
-
-app.get("/", (c) => {
-  return c.text("Hello Cloudflare Workers!");
-});
-
-export default app;
+export default {
+  async fetch(request, env, ctx) {
+    initDatabase(env.DB);
+    return App.fetch(request, env, ctx);
+  },
+} satisfies ExportedHandler<Cloudflare.Env>;
